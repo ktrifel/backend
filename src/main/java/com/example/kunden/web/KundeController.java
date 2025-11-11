@@ -21,24 +21,27 @@ public class KundeController {
     }
 
     @GetMapping("/{id}")
-    public Kunde get(@PathVariable Long id) {
+    @SuppressWarnings("null")
+    public Kunde get(@PathVariable long id) {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("Kunde nicht gefunden"));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @SuppressWarnings("null")
     public Kunde create(@RequestBody Kunde kunde) {
         return repo.save(kunde);
     }
 
     @PutMapping("/{id}")
-    public Kunde update(@PathVariable Long id, @RequestBody Kunde incoming) {
+    @SuppressWarnings("null")
+    public Kunde update(@PathVariable long id, @RequestBody Kunde incoming) {
         var kunde = repo.findById(id).orElseThrow(() -> new RuntimeException("Kunde nicht gefunden"));
         kunde.setVorname(incoming.getVorname());
         kunde.setNachname(incoming.getNachname());
         kunde.setFirma(incoming.getFirma());
-        kunde.setGeburtsdatum(incoming.getGeburtsdatum());
-        kunde.setEMail(incoming.getEMail());
+    kunde.setGeburtsdatum(incoming.getGeburtsdatum());
+    kunde.setEmail(incoming.getEmail());
         kunde.setTelefonnummer(incoming.getTelefonnummer());
         kunde.setAdresse(incoming.getAdresse());
         return repo.save(kunde);
@@ -46,7 +49,8 @@ public class KundeController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    @SuppressWarnings("null")
+    public void delete(@PathVariable long id) {
         repo.deleteById(id);
     }
 }

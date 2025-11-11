@@ -1,6 +1,7 @@
 services:
   mysql:
-    image: mysql:8.4
+    # Use a stable MySQL 8.0 image tag; `mysql:8.4` does not exist on Docker Hub
+    image: mysql:8.0
     environment:
       MYSQL_DATABASE: kunden_db
       MYSQL_USER: app
@@ -8,13 +9,20 @@ services:
       MYSQL_ROOT_PASSWORD: root
       TZ: UTC
     ports:
-      - "3306:3306"
+      # Host port changed to 3307 because local MySQL is already listening on 3306
+      - "3307:3306"
     command: [
       "--default-authentication-plugin=caching_sha2_password",
       "--character-set-server=utf8mb4",
       "--collation-server=utf8mb4_0900_ai_ci",
       "--innodb-file-per-table=ON"
     ]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - mysqldata:/var/lib/mysql
 volumes:

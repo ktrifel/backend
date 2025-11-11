@@ -26,7 +26,7 @@ public class Kunde {
     private LocalDate geburtsdatum;
 
     @Column(name = "e_mail", unique = true)
-    private String eMail;
+    private String email;
 
     private String telefonnummer;
 
