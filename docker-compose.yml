@@ -1,29 +1,30 @@
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql/mysql-server:8.0.47
     container_name: backend-mysql
     environment:
-      MYSQL_DATABASE: kunden_db
-      MYSQL_USER: app
-      MYSQL_PASSWORD: app
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       TZ: UTC
     ports:
-      # Host port changed to 3307 because local MySQL is already listening on 3306
       - "3307:3306"
-    command: [
-      "--default-authentication-plugin=caching_sha2_password",
-      "--character-set-server=utf8mb4",
-      "--collation-server=utf8mb4_0900_ai_ci",
-      "--innodb-file-per-table=ON"
-    ]
+    command: >
+      mysqld
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_0900_ai_ci
+      --innodb-file-per-table=ON
+      --skip-host-cache=ON
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u${MYSQL_USER} -p${MYSQL_PASSWORD} || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
     volumes:
       - mysqldata:/var/lib/mysql
+
 volumes:
   mysqldata:
